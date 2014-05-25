@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>JS Game Animation</title>
+    <link rel="stylesheet" type="text/css" href="css/main.css" />
+</head>
+<body>
+    <div id="Container">
+        <h1>
+            <a href="https://github.com/philpill/js-game-animation">
+                JS Game Animation
+            </a>
+        </h1>
+
+        <div class="control-panel">
+            <p>Timeout: <span id="Timeout">0</span></p>
+            <p>FPS: <span id="Fps"></span></p>
+
+            <a id="Pause" class="control" href="#">Pause</a>
+            <a id="Resume" class="control" href="#">Resume</a>
+        </div>
+
+        <canvas id="Canvas" height="260" width="150"></canvas>
+    </div>
+    <script src="js/external/require.js" data-main="js/main"></script>
+</body>
+</html>

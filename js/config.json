@@ -1,0 +1,9 @@
+{
+    "timeout" : 50,
+    "isPaused" : false,
+    "canvas" : {
+        "heartbeat" : {
+            "rate" : 0.05
+        }
+    }
+}
