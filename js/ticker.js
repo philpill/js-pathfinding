@@ -19,12 +19,11 @@ define(function (require) {
 
             this.requestID = requestAnimationFrame(this.tick.bind(this));
         },
-        tick : function () {
+        tick : function (timestamp) {
 
-            this.currentTime = new Date();
-            this.fps = 1000 / (this.currentTime - this.previousTime);
+            this.fps = (Math.round((1000 * (1 / (timestamp - this.previousTime)))*10))/10;
             this.trigger('tick', { 'fps' : this.fps, 'time' : Date.now() });
-            this.previousTime = this.currentTime;
+            this.previousTime = timestamp;
             this.requestID = requestAnimationFrame(this.tick.bind(this));
         },
         pauseCommand : function () {

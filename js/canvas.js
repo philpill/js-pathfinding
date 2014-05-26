@@ -7,6 +7,7 @@ define(function (require) {
     var Canvas = function (config) {
 
         this.beatRate = config.canvas.heartbeat.rate;
+        this.gridSize = config.canvas.grid.size;
     }
 
     Canvas.prototype = {
@@ -65,7 +66,9 @@ define(function (require) {
             } else {
                 this.ctx.fillStyle = shape.fillStyle;
             }
-            this.ctx.rect(shape.x, shape.y, shape.width, shape.height);
+            var x = shape.snapToGrid ? Math.floor(shape.x/this.gridSize)*this.gridSize + 1 : shape.x;
+            var y = shape.snapToGrid ? Math.floor(shape.y/this.gridSize)*this.gridSize + 1 : shape.y;
+            this.ctx.rect(x, y, shape.width, shape.height);
             this.ctx.fill();
             this.ctx.stroke();
         },
@@ -79,15 +82,9 @@ define(function (require) {
             } else {
                 this.ctx.fillStyle = shape.fillStyle;
             }
-
-            if (shape.step) {
-                var x = Math.round(shape.x/shape.step)*shape.step;
-                var y = Math.round(shape.y/shape.step)*shape.step;
-                this.ctx.arc(x, y, shape.radius, shape.start, shape.end);
-            } else {
-                this.ctx.arc(shape.x, shape.y, shape.radius, shape.start, shape.end);
-            }
-
+            var x = shape.snapToGrid ? Math.floor(shape.x/this.gridSize)*this.gridSize + (this.gridSize/2) - 1 : shape.x;
+            var y = shape.snapToGrid ? Math.floor(shape.y/this.gridSize)*this.gridSize + (this.gridSize/2) - 1 : shape.y;
+            this.ctx.arc(x, y, shape.radius, shape.start, shape.end);
             this.ctx.fill();
             this.ctx.stroke();
 

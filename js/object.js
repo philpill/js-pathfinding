@@ -2,6 +2,8 @@ define(function (require) {
 
     require('microevent');
 
+    require('astar');
+
     var CanvasObject = function () {
 
         this.zIndex = 0;
@@ -22,11 +24,13 @@ define(function (require) {
 
     CanvasObject.prototype = {
 
-        constructor : CanvasObject,
+        execute : function () {
 
-        execute : function (command, e) {
+            var args = [].slice.call(arguments);
 
-            this[command + 'Command'](e);
+            var command = args[0];
+
+            this[command + 'Command'](args.slice(1));
         },
         fuzzyEqual : function (valueA, valueB, delta) {
 
@@ -36,13 +40,21 @@ define(function (require) {
 
             return fuzzyEqual;
         },
-        tickCommand : function (e) {
+        tickCommand : function () {
 
-            this.translate();
+            var args = [].slice.call(arguments)[0];
+
+            // console.log(args);
+
+            this.translate(args[1]);
         },
-        translate : function () {
+        translate : function (map) {
 
-            var translateDelta = 5;
+            // var path = a_star(start, end, grid, columns, rows, true);
+
+            // console.log(map);
+
+            var translateDelta = 2;
 
             if (this.destinationX) {
                 this.x = this.x < this.destinationX ? this.x + translateDelta : this.x - translateDelta;

@@ -4,6 +4,11 @@
     "canvas" : {
         "heartbeat" : {
             "rate" : 0.05
+        },
+        "grid" : {
+            "size" : 20,
+            "height" : 26,
+            "width" : 15
         }
     }
 }

@@ -5,6 +5,7 @@ define(function (require) {
     var Canvas = require('canvas');
     var Circle = require('circle');
     var Square = require('square');
+    var data = require('data');
 
     var Core = function (config) {
 
@@ -17,37 +18,17 @@ define(function (require) {
 
         init : function () {
 
-            console.log('core.init()');
-
             this.loadModules(this.config);
-
             this.bindEvents(this.config);
-
-            this.shapes = [];
-
-            this.shapes.push(this.createShape1());
-            this.shapes.push(this.createShape2());
+            this.loadShapes(this.config);
 
             this.selected = null;
         },
-        createShape1 : function () {
+        loadShapes : function (config) {
 
-            return new Square({
-                id : 1,
-                height : 10,
-                width : 10,
-                x : 30,
-                y : 30
-            });
-        },
-        createShape2 : function () {
-
-            return new Circle({
-                id : 2,
-                radius : 10,
-                x : 60,
-                y : 50
-            });
+            this.shapes = [];
+            this.shapes = this.shapes.concat(data.getSquares());
+            this.shapes = this.shapes.concat(data.getCircles());
         },
         loadModules : function (config) {
 
@@ -107,10 +88,52 @@ define(function (require) {
             }
         },
 
+        getGrid : function () {
+
+            var width = this.config.canvas.grid.width;
+
+            var height = this.config.canvas.grid.height;
+
+            var grid = new Array(width);
+
+            var l = grid.length;
+
+            while (l--) {
+
+                grid[l] = [height];
+
+                for (var k = 0; k < height; k++) {
+
+                    grid[l][k] = 0;
+                }
+            }
+
+            return grid;
+        },
+
+        getObjectMap : function () {
+
+            var gridSize = this.config.canvas.grid.size;
+
+            var objects = this.shapes;
+
+            var l = objects.length;
+
+            var grid = this.getGrid();
+
+            while (l--) {
+                objects[l].gridX = Math.round(objects[l].x/gridSize) + 1;
+                objects[l].gridY = Math.round(objects[l].y/gridSize) + 1;
+                grid[objects[l].gridX][objects[l].gridY] = 1;
+            }
+
+            return grid;
+        },
+
         tickObjects : function (objects, e) {
             var l = objects.length;
             while (l--) {
-                objects[l].execute('tick', e);
+                objects[l].execute('tick', e, this.getObjectMap());
             }
         },
 

@@ -15,7 +15,7 @@ define(function (require) {
         this.isClickable = true;
         this.isFocusable = true;
         this.isSelectable = true;
-        this.step = 20;
+        this.snapToGrid = true;
     }
 
     // JavaScript Inheritance Done Right
@@ -41,7 +41,7 @@ define(function (require) {
             y           : this.y,
             fillStyle   : this.fillStyle,
             isSelected  : this.isSelected,
-            step        : this.step
+            snapToGrid  : this.snapToGrid
         }
     };
 
