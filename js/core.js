@@ -6,10 +6,14 @@ define(function (require) {
     var Circle = require('circle');
     var Square = require('square');
     var data = require('data');
+    var Utils = require('utils');
+
+    require('astar');
 
     var Core = function (config) {
 
         this.config = config;
+        this.utils = new Utils(config);
     }
 
     Core.prototype = {
@@ -88,29 +92,6 @@ define(function (require) {
             }
         },
 
-        getGrid : function () {
-
-            var width = this.config.canvas.grid.width;
-
-            var height = this.config.canvas.grid.height;
-
-            var grid = new Array(width);
-
-            var l = grid.length;
-
-            while (l--) {
-
-                grid[l] = [height];
-
-                for (var k = 0; k < height; k++) {
-
-                    grid[l][k] = 0;
-                }
-            }
-
-            return grid;
-        },
-
         getObjectMap : function () {
 
             var gridSize = this.config.canvas.grid.size;
@@ -119,11 +100,11 @@ define(function (require) {
 
             var l = objects.length;
 
-            var grid = this.getGrid();
+            var grid = this.utils.getBlankGrid();
 
             while (l--) {
-                objects[l].gridX = Math.round(objects[l].x/gridSize) + 1;
-                objects[l].gridY = Math.round(objects[l].y/gridSize) + 1;
+                objects[l].gridX = Math.floor(objects[l].x/gridSize);
+                objects[l].gridY = Math.floor(objects[l].y/gridSize);
                 grid[objects[l].gridX][objects[l].gridY] = 1;
             }
 
@@ -133,7 +114,64 @@ define(function (require) {
         tickObjects : function (objects, e) {
             var l = objects.length;
             while (l--) {
-                objects[l].execute('tick', e, this.getObjectMap());
+                var map = this.getObjectMap();
+
+                this.translate(objects[l], map);
+
+                objects[l].execute('tick', e);
+            }
+        },
+
+        translate : function (object, map) {
+
+            if (object.destinationX || object.destinationY) {
+
+                var width = this.config.canvas.grid.width;
+                var height = this.config.canvas.grid.height;
+                var gridSize = this.config.canvas.grid.size;
+
+                var gridX = this.utils.getGridFromCoord(object.x);
+                var gridY = this.utils.getGridFromCoord(object.y);
+
+                var gridDestinationX = object.destinationX ? this.utils.getGridFromCoord(object.destinationX) : gridX;
+                var gridDestinationY = object.destinationY ? this.utils.getGridFromCoord(object.destinationY) : gridY;
+
+                var start = [gridX, gridY];
+                var end = [gridDestinationX, gridDestinationY];
+
+                var path = a_star(start, end, map, width, height, true);
+
+                if (path.length > 1) {
+
+                    var next = [path[1].x, path[1].y];
+
+                    console.log(object.id + ': ' + start, ' -> ', next, ' ... ', end);
+
+                    if (gridX < next[0]) {
+
+                        object.x = object.x + gridSize;
+
+                    } else if (gridX > next[0]) {
+
+                        object.x = object.x - gridSize;
+
+                    }
+
+                    if (gridY < next[1]) {
+
+                        object.y = object.y + gridSize;
+
+                    } else if (gridY > next[1]) {
+
+                        object.y = object.y - gridSize;
+
+                    }
+
+                } else {
+
+                    object.destinationX = null;
+                    object.destinationY = null;
+                }
             }
         },
 
@@ -194,11 +232,13 @@ define(function (require) {
             });
 
             this.interface.bind('pause', function(e) {
+                e.preventDefault();
                 console.log('interface:pause');
                 that.ticker.execute('pause');
             });
 
             this.interface.bind('resume', function(e) {
+                e.preventDefault();
                 console.log('interface:resume');
                 that.ticker.execute('resume');
             });

@@ -2,8 +2,6 @@ define(function (require) {
 
     require('microevent');
 
-    require('astar');
-
     var CanvasObject = function () {
 
         this.zIndex = 0;
@@ -32,39 +30,10 @@ define(function (require) {
 
             this[command + 'Command'](args.slice(1));
         },
-        fuzzyEqual : function (valueA, valueB, delta) {
-
-            var fuzzyEqual = false;
-
-            fuzzyEqual = Math.round(valueA/delta)*delta === Math.round(valueB/delta)*delta;
-
-            return fuzzyEqual;
-        },
         tickCommand : function () {
 
             var args = [].slice.call(arguments)[0];
-
             // console.log(args);
-
-            this.translate(args[1]);
-        },
-        translate : function (map) {
-
-            // var path = a_star(start, end, grid, columns, rows, true);
-
-            // console.log(map);
-
-            var translateDelta = 2;
-
-            if (this.destinationX) {
-                this.x = this.x < this.destinationX ? this.x + translateDelta : this.x - translateDelta;
-                this.destinationX = this.fuzzyEqual(this.destinationX, this.x, translateDelta) ? null : this.destinationX;
-            }
-
-            if (this.destinationY) {
-                this.y = this.y < this.destinationY ? this.y + translateDelta : this.y - translateDelta;
-                this.destinationY = this.fuzzyEqual(this.destinationY, this.y, translateDelta) ? null : this.destinationY;
-            }
         },
         serialize : function () {
 
