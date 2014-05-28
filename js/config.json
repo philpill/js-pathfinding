@@ -1,5 +1,5 @@
 {
-    "timeout" : 50,
+    "targetFps" : 9,
     "isPaused" : false,
     "canvas" : {
         "heartbeat" : {

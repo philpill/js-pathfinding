@@ -4,8 +4,6 @@ define(function (require) {
 
     var Interface = function (config) {
 
-        this.timeout = config.timeout;
-        this.timeoutEl = document.getElementById('Timeout');
         this.fpsEl = document.getElementById('Fps');
         this.inactiveStyleClass = 'link--inactive';
         this.controlClass = 'control';
@@ -24,7 +22,6 @@ define(function (require) {
         },
         initialiseControls: function () {
 
-            this.timeoutEl.innerHTML = this.timeout;
         },
         deactivateControls : function () {
 
