@@ -6,7 +6,6 @@ define(function (require) {
 
         this.targetFps = config.targetFps;
         this.previousTime = new Date();
-        this.currentTime = new Date();
         this.fps = 0;
     }
 
@@ -16,15 +15,16 @@ define(function (require) {
 
         init : function (args) {
 
-            this.requestID = requestAnimationFrame(this.tick.bind(this));
+            this.tick();
         },
-        tick : function (timestamp) {
+        tick : function () {
 
             this.timeoutID = setTimeout((function() {
+                var timestamp = new Date();
                 this.fps = (Math.round((1000 * (1 / (timestamp - this.previousTime)))*10))/10;
                 this.trigger('tick', { 'fps' : this.fps, 'time' : Date.now() });
                 this.previousTime = timestamp;
-                requestAnimationFrame(this.tick.bind(this));
+                this.tick();;
             }).bind(this), 1000 / this.targetFps);
         },
         pauseCommand : function () {
@@ -35,7 +35,7 @@ define(function (require) {
         },
         resumeCommand : function () {
 
-            requestAnimationFrame(this.tick.bind(this));
+            this.tick();
             this.trigger('resume');
         },
         execute : function (command) {
